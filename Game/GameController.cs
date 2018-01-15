@@ -71,7 +71,7 @@ namespace Game
                     board.printTheBoardCosts();
                     printGameResults(board.gameScore());
                     Console.WriteLine("\nPlayer " + currentPlayerChar + " turn .. ");
-                //    Console.ReadLine();
+                    Console.ReadLine();
                 }
 
                 if(board.getLegalMoves(currentPlayerChar).Count == 0)
@@ -79,7 +79,7 @@ namespace Game
                     if (_printResults)
                     {
                         Console.WriteLine("Player " + currentPlayerChar + " got no legal moves .. ");
-                 //       Console.ReadLine();
+                        Console.ReadLine();
                         Console.Clear();
 
                     }
