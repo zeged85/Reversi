@@ -10,12 +10,9 @@ namespace Game
 {
     public class Player1 : Player
     {
-        static int MaxDepth;
-        static Tuple<int, int> BestMove;
-        static Stopwatch mytimer;
-        static TimeSpan timespan;
-        static int MaxPrize;
+       // static Tuple<int, int> BestMove;
 
+ 
 
         public void getPlayers              // players ids
         (
@@ -39,41 +36,31 @@ namespace Game
    
 
 
-        static int maxValue(Board board, int alpha, int beta, int depth, char playerChar)
+        static Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
         {
-
-            if (depth >= MaxDepth || !isTimeOk() || board.isTheGameEnded())
+            Stopwatch mytimer = Stopwatch.StartNew();
+            if (depth ==0 || quantom<0 || board.isTheGameEnded())
             {
-                int n = board._n;
                 int score = board.gameScore().Item1 - board.gameScore().Item2;
-                if (board._boardGame[0,0] == playerChar)
-                {
-                    score += MaxPrize;
-                }
-                if (board._boardGame[n-1, 0] == playerChar)
-                {
-                    score += MaxPrize;
-                }
-                if (board._boardGame[0, n-1] == playerChar)
-                {
-                    score += MaxPrize;
-                }
-                if (board._boardGame[n-1, n-1] == playerChar)
-                {
-                    score += MaxPrize;
-                }
 
-                return score;
+                return new Tuple<int, Tuple<int, int>>(score, null);
+            }
+            if (quantom < 25)
+            {
+                depth = 1;
+            }
+            else if (quantom < 50)
+            {
+                depth = 4;
             }
 
-
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            List <Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
             Tuple<int, int> localBestMove = null;
 
             if (legalMoves.Count == 0)
             {
                 //pass
-                return minValue(board, alpha, beta, depth + 1, otherPlayer(playerChar));
+                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds);
             }
 
 
@@ -85,24 +72,8 @@ namespace Game
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
-                int n = board._n;
-                if (newBoard._boardGame[0, 0] == playerChar)
-                {
-                    boardScore += MaxPrize;
-                }
-                if (newBoard._boardGame[n - 1, 0] == playerChar)
-                {
-                    boardScore += MaxPrize;
-                }
-                if (newBoard._boardGame[0, n - 1] == playerChar)
-                {
-                    boardScore += MaxPrize;
-                }
-                if (newBoard._boardGame[n - 1, n - 1] == playerChar)
-                {
-                    boardScore += MaxPrize;
-                }
-                alpha = minValue(newBoard, alpha, beta, depth + 1, otherPlayer(playerChar));
+
+                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds).Item1;
 
 
                 if (alpha > bestResult)
@@ -120,48 +91,40 @@ namespace Game
             }
 
 
-            BestMove = new Tuple<int, int>(localBestMove.Item1, localBestMove.Item2);
-            return alpha;
+            Tuple<int, int> BestMove = new Tuple<int, int>(localBestMove.Item1, localBestMove.Item2);
+            return new Tuple<int,Tuple<int,int>>(alpha,BestMove);
 
 
         }
 
 
-        static int minValue(Board board, int alpha, int beta, int depth, char playerChar)
+        static Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
         {
 
-            if (depth >= MaxDepth || !isTimeOk() || board.isTheGameEnded())
+            Stopwatch mytimer = Stopwatch.StartNew();
+            if (depth == 0 || quantom==0 || board.isTheGameEnded())
             {
                 int n = board._n;
                 int score = (board.gameScore().Item1 - board.gameScore().Item2);
-                if (board._boardGame[0, 0] == playerChar)
-                {
-                    score -= MaxPrize;
-                }
-                if (board._boardGame[n-1, 0] == playerChar)
-                {
-                    score -= MaxPrize;
-                }
-                if (board._boardGame[0, n-1] == playerChar)
-                {
-                    score -= MaxPrize;
-                }
-                if (board._boardGame[n-1, n-1] == playerChar)
-                {
-                    score -= MaxPrize;
-                }
-
-                return score;
+ 
+                return new Tuple<int,Tuple<int,int>> (score, null);
             }
 
-
+            if (quantom < 25)
+            {
+                depth = 1;
+            }
+            else if (quantom < 50)
+            {
+                depth = 3;
+            }
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
             Tuple<int, int> localBestMove = null;
 
             if (legalMoves.Count == 0)
             {
                 //pass
-                return maxValue(board, alpha, beta, depth + 1, otherPlayer(playerChar));
+                return maxValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds);
             }
 
 
@@ -175,23 +138,8 @@ namespace Game
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
                 int n = board._n;
-                if (newBoard._boardGame[0, 0] == playerChar)
-                {
-                    boardScore -= MaxPrize;
-                }
-                if (newBoard._boardGame[n - 1, 0] == playerChar)
-                {
-                    boardScore -= MaxPrize;
-                }
-                if (newBoard._boardGame[0, n - 1] == playerChar)
-                {
-                    boardScore -= MaxPrize;
-                }
-                if (newBoard._boardGame[n - 1, n - 1] == playerChar)
-                {
-                    boardScore -= MaxPrize;
-                }
-                beta = maxValue(newBoard, alpha, beta, depth + 1, otherPlayer(playerChar));
+
+                beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds).Item1;
 
 
                 if (beta < bestResult)
@@ -209,34 +157,21 @@ namespace Game
             }
 
 
-            BestMove = new Tuple<int,int>(localBestMove.Item1,localBestMove.Item2);
-            return beta;
+            Tuple<int,int> BestMove = new Tuple<int,int>(localBestMove.Item1,localBestMove.Item2);
+            return new Tuple < int,Tuple < int,int>> (beta, localBestMove);
 
 
         }
 
-        public static bool isTimeOk()
-        {
-            
-            int timeThreshold = 25;
-            long maxTime = timespan.Ticks - timeThreshold;
 
-            if (mytimer.Elapsed.Milliseconds > maxTime)
-            {
-                //System.out.println("(WW) Runnning out of time...");
-               
-
-
-                return false;
-            }
-            
-            return true;
-        }
 
             public static Tuple<int, int> turn(Board board, char playerChar, TimeSpan timesup)
         {
-            mytimer = Stopwatch.StartNew();
-            timespan = timesup;
+            Stopwatch mytimer = Stopwatch.StartNew();
+            TimeSpan timespan = timesup;
+            long timeThreshold = 10;
+            long quantom = timespan.Ticks - mytimer.Elapsed.Milliseconds - timeThreshold;
+
             //List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
             // BestMove = new Tuple<int, int>(legalMoves[0].Item1, legalMoves[0].Item2);
             /*
@@ -246,11 +181,11 @@ namespace Game
                         }
                         */
             int n = board._n;
-            MaxDepth = 10;
-
-            MaxPrize = n * n;
-
-            int bestScore = maxValue(board, int.MinValue, int.MaxValue, 0, playerChar);
+           // MaxDepth = 10;
+            
+            Tuple<int,Tuple<int,int>> best = maxValue(board, int.MinValue, int.MaxValue, int.MaxValue, playerChar, quantom);
+            int bestScore = best.Item1;
+            Tuple<int, int> BestMove = best.Item2;
 
 
             if (BestMove == null)
