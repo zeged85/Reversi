@@ -48,7 +48,7 @@ namespace Game
                 int score = board.gameScore().Item1 - board.gameScore().Item2;
                 if (depth == 0)
                 {
-                    Console.WriteLine("depth");
+                //    Console.WriteLine("depth");
                 }
                 return new Tuple<int, Tuple<int, int>>(score, null);
             }
@@ -68,7 +68,11 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-                
+                if (quantom - mytimer.ElapsedMilliseconds < 0)
+                {
+                 //   Console.WriteLine("break");
+                    break;
+                }
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
@@ -118,7 +122,7 @@ namespace Game
                 int score = (board.gameScore().Item1 - board.gameScore().Item2);
                 if (depth == 0)
                 {
-                    Console.WriteLine("depth");
+                  //  Console.WriteLine("depth");
                 }
                 return new Tuple<int,Tuple<int,int>> (score, null);
             }
@@ -139,7 +143,11 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-
+                if (quantom - mytimer.ElapsedMilliseconds < 0)
+                {
+                //    Console.WriteLine("break");
+                    break;
+                }
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
