@@ -10,11 +10,11 @@ namespace Game
 {
     public class Player1 : Player
     {
-        static int MaxDepth = 8;
+        static int MaxDepth;
         static Tuple<int, int> BestMove;
         static Stopwatch mytimer;
         static TimeSpan timespan;
-
+        static int MaxPrize;
 
 
         public void getPlayers              // players ids
@@ -44,7 +44,26 @@ namespace Game
 
             if (depth >= MaxDepth || !isTimeOk() || board.isTheGameEnded())
             {
-                return board.gameScore().Item1 - board.gameScore().Item2;
+                int n = board._n;
+                int score = board.gameScore().Item1 - board.gameScore().Item2;
+                if (board._boardGame[0,0] == playerChar)
+                {
+                    score += MaxPrize;
+                }
+                if (board._boardGame[n-1, 0] == playerChar)
+                {
+                    score += MaxPrize;
+                }
+                if (board._boardGame[0, n-1] == playerChar)
+                {
+                    score += MaxPrize;
+                }
+                if (board._boardGame[n-1, n-1] == playerChar)
+                {
+                    score += MaxPrize;
+                }
+
+                return score;
             }
 
 
@@ -66,7 +85,23 @@ namespace Game
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
-
+                int n = board._n;
+                if (newBoard._boardGame[0, 0] == playerChar)
+                {
+                    boardScore += MaxPrize;
+                }
+                if (newBoard._boardGame[n - 1, 0] == playerChar)
+                {
+                    boardScore += MaxPrize;
+                }
+                if (newBoard._boardGame[0, n - 1] == playerChar)
+                {
+                    boardScore += MaxPrize;
+                }
+                if (newBoard._boardGame[n - 1, n - 1] == playerChar)
+                {
+                    boardScore += MaxPrize;
+                }
                 alpha = minValue(newBoard, alpha, beta, depth + 1, otherPlayer(playerChar));
 
 
@@ -97,7 +132,26 @@ namespace Game
 
             if (depth >= MaxDepth || !isTimeOk() || board.isTheGameEnded())
             {
-                return board.gameScore().Item1- board.gameScore().Item2;
+                int n = board._n;
+                int score = (board.gameScore().Item1 - board.gameScore().Item2);
+                if (board._boardGame[0, 0] == playerChar)
+                {
+                    score -= MaxPrize;
+                }
+                if (board._boardGame[n-1, 0] == playerChar)
+                {
+                    score -= MaxPrize;
+                }
+                if (board._boardGame[0, n-1] == playerChar)
+                {
+                    score -= MaxPrize;
+                }
+                if (board._boardGame[n-1, n-1] == playerChar)
+                {
+                    score -= MaxPrize;
+                }
+
+                return score;
             }
 
 
@@ -120,7 +174,23 @@ namespace Game
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
-
+                int n = board._n;
+                if (newBoard._boardGame[0, 0] == playerChar)
+                {
+                    boardScore -= MaxPrize;
+                }
+                if (newBoard._boardGame[n - 1, 0] == playerChar)
+                {
+                    boardScore -= MaxPrize;
+                }
+                if (newBoard._boardGame[0, n - 1] == playerChar)
+                {
+                    boardScore -= MaxPrize;
+                }
+                if (newBoard._boardGame[n - 1, n - 1] == playerChar)
+                {
+                    boardScore -= MaxPrize;
+                }
                 beta = maxValue(newBoard, alpha, beta, depth + 1, otherPlayer(playerChar));
 
 
@@ -168,14 +238,17 @@ namespace Game
             mytimer = Stopwatch.StartNew();
             timespan = timesup;
             //List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
-           // BestMove = new Tuple<int, int>(legalMoves[0].Item1, legalMoves[0].Item2);
-/*
-            if (legalMoves.Count == 0)
-            {
-                return null;
-            }
-            */
+            // BestMove = new Tuple<int, int>(legalMoves[0].Item1, legalMoves[0].Item2);
+            /*
+                        if (legalMoves.Count == 0)
+                        {
+                            return null;
+                        }
+                        */
+            int n = board._n;
+            MaxDepth = 10;
 
+            MaxPrize = n * n;
 
             int bestScore = maxValue(board, int.MinValue, int.MaxValue, 0, playerChar);
 

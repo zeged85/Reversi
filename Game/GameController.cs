@@ -95,7 +95,7 @@ namespace Game
                 if (_printResults)
                 {
                     Console.WriteLine("Selected action: [ " + selectedAction.Item1 + " , " + selectedAction.Item2 + " ]");
-                    //Console.ReadLine();
+                    Console.ReadLine();
                     Console.Clear();
 
                 }
