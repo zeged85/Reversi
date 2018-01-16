@@ -65,7 +65,7 @@ namespace Game
                 noZero++;
             }
 
-            int score = (board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * (myChips / enemyChips) * 100;
+            int score = /*(board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * */ (myChips / enemyChips) * 100;
 
             if (depth ==0 || board.isTheGameEnded())
             {
@@ -161,7 +161,7 @@ namespace Game
                 noZero++;
             }
 
-                    int score = (board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * ( myChips / enemyChips ) * 100; //chips count
+                    int score = /*(board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * */ ( myChips / enemyChips ) * 100; //chips count
 
 
             if (depth == 0 || board.isTheGameEnded())
