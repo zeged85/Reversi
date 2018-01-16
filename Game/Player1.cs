@@ -38,7 +38,9 @@ namespace Game
         {
 
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer( playerChar));
             if (quantom < 0)
+
             {
                 Console.WriteLine("quantom");
                // int score = board.gameScore().Item1 - board.gameScore().Item2;
@@ -49,8 +51,9 @@ namespace Game
             
 
             int _n = board._n;
-            int myChips = 1;
-            int enemyChips = 1;
+            double size = (double)_n * _n;
+            double myChips = 1;
+            double enemyChips = 1;
             for (int i = 0; i < _n; i++)
                 for (int j = 0; j < _n; j++)
                 {
@@ -60,15 +63,18 @@ namespace Game
                         myChips += 1;
                 }
 
-            int noZero = board.gameScore().Item2;
-            if (noZero == 0)
-            {
-                noZero++;
-            }
 
-            double chipRatio = (double)myChips / (double)enemyChips;
-            double scoreRation = (double)board.gameScore().Item1 / (double)noZero;
-            int score = Convert.ToInt32((double)(legalMoves.Count + 1) * 20  + chipRatio * 30 + scoreRation * 50 * (1 + _n*_n - movesLeft)); //chips count
+
+
+            double chipRatio = 0;
+            chipRatio = (Math.Abs(myChips - enemyChips)) / (enemyChips + myChips);
+            double scoreRation = (double)(Math.Abs(board.gameScore().Item1 - board.gameScore().Item2)) / (double)(board.gameScore().Item1 + board.gameScore().Item2);
+            double movesRatio = 0;
+            if (legalMoves.Count + enemyLegalMoves.Count != 0)
+                movesRatio = (double)(Math.Abs(legalMoves.Count - enemyLegalMoves.Count)) / (double)(legalMoves.Count + (double)enemyLegalMoves.Count);
+            double progress = ((size - (double)movesLeft ) / size);
+            double weights = scoreRation * progress;
+            int score = Convert.ToInt32(movesRatio * 20 + chipRatio * 100 + weights * 20); //chips count
 
             if (depth ==0 || board.isTheGameEnded())
             {
@@ -89,6 +95,10 @@ namespace Game
                 //pass
                 return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds, movesLeft);
             }
+            else
+            {
+                localBestMove = legalMoves[legalMoves.Count/2];
+            }
 
 
             int bestResult = int.MinValue;
@@ -106,11 +116,12 @@ namespace Game
 
                 alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
+                /*corners
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     alpha = Convert.ToInt32((double)alpha * 10);
                 }
-
+                */
 
                 if (alpha > bestResult)
                 {
@@ -141,6 +152,7 @@ namespace Game
         Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom, int movesLeft)
         {
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer(playerChar));
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
@@ -153,8 +165,9 @@ namespace Game
           
 
             int _n = board._n;
-            int myChips = 1;
-            int enemyChips = 1;
+            double size = (double)_n * _n;
+            double myChips = 1;
+            double enemyChips = 1;
             for (int i = 0; i < _n; i++)
                 for (int j = 0; j < _n; j++)
                 {
@@ -164,15 +177,16 @@ namespace Game
                         myChips += 1;
                 }
 
-            int noZero = board.gameScore().Item2;
-            if (noZero == 0)
-            {
-                noZero++;
-            }
 
-            double chipRatio = (double)myChips / (double)enemyChips;
-            double scoreRation = (double)board.gameScore().Item1 / (double)noZero;
-            int score = Convert.ToInt32((double)(legalMoves.Count + 1) * 20  + chipRatio * 30 + scoreRation * 50 * (1 + _n*_n - movesLeft)); //chips count
+            double chipRatio = 0;
+            chipRatio = (Math.Abs(myChips - enemyChips)) / (enemyChips + myChips);
+            double scoreRation = (double)(Math.Abs(board.gameScore().Item1 - board.gameScore().Item2)) / (double)(board.gameScore().Item1 + board.gameScore().Item2);
+            double movesRatio = 0;
+            if (legalMoves.Count + enemyLegalMoves.Count != 0)
+                movesRatio = (double)(Math.Abs(legalMoves.Count - enemyLegalMoves.Count)) / (double)(legalMoves.Count + (double)enemyLegalMoves.Count);
+            double progress = ((size - (double)movesLeft) / size);
+            double weights = scoreRation * progress;
+            int score = Convert.ToInt32(movesRatio * 20 + chipRatio * 100 + weights * 20); //chips count
 
 
             if (depth == 0 || board.isTheGameEnded())
@@ -186,19 +200,23 @@ namespace Game
                 return new Tuple<int,Tuple<int,int>> (score, null);
             }
 
- 
-            
+
+
             Tuple<int, int> localBestMove = null;
 
             if (legalMoves.Count == 0)
             {
                 //pass
-                
-                return maxValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft);
+                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds, movesLeft);
+            }
+            else
+            {
+                localBestMove = legalMoves[legalMoves.Count / 2];
             }
 
 
-         
+
+
             int bestResult = int.MaxValue;
 
             foreach (Tuple<int, int> legalMove in legalMoves)
@@ -215,10 +233,12 @@ namespace Game
 
                 beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
+                /*corners
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     beta = Convert.ToInt32((double)beta * 0.1);
                 }
+                */
 
                 if (beta < bestResult)
                 {
