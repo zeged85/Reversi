@@ -22,7 +22,7 @@ namespace Game
             player1_2 = "036682177";        // id2
         }
 
-        private static char otherPlayer(char player)
+        private char otherPlayer(char player)
         {
             if (player == '1')
                 return '2';
@@ -34,18 +34,24 @@ namespace Game
    
 
 
-        static Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
+        Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
         {
+
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
-                int score = board.gameScore().Item1 - board.gameScore().Item2;
-                return new Tuple<int, Tuple<int, int>>(score, null); ;
+               // int score = board.gameScore().Item1 - board.gameScore().Item2;
+                return new Tuple<int, Tuple<int, int>>(int.MinValue, null); ;
             }
+
             Stopwatch mytimer = Stopwatch.StartNew();
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+
+            int score = (board.gameScore().Item1 - board.gameScore().Item2) * (legalMoves.Count + 1);
+
             if (depth ==0 || board.isTheGameEnded())
             {
-                int score = board.gameScore().Item1 - board.gameScore().Item2;
+                
                 if (depth == 0)
                 {
                 //    Console.WriteLine("depth");
@@ -54,7 +60,7 @@ namespace Game
             }
 
 
-            List <Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            
             Tuple<int, int> localBestMove = null;
 
             if (legalMoves.Count == 0)
@@ -95,8 +101,7 @@ namespace Game
             }
 
 
-            Tuple<int, int> BestMove = new Tuple<int, int>(localBestMove.Item1, localBestMove.Item2);
-            return new Tuple<int,Tuple<int,int>>(alpha,BestMove);
+            return new Tuple<int,Tuple<int,int>>(alpha,localBestMove);
 
 
         }
@@ -107,19 +112,26 @@ namespace Game
 
 
 
-        static Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
+        Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
         {
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
-                int score = board.gameScore().Item1 - board.gameScore().Item2;
-                return new Tuple<int, Tuple<int, int>>(score, null);
+             //   int score = board.gameScore().Item1 - board.gameScore().Item2;
+                return new Tuple<int, Tuple<int, int>>(int.MaxValue, null);
             }
+
+
             Stopwatch mytimer = Stopwatch.StartNew();
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+    
+            int score = (board.gameScore().Item1 - board.gameScore().Item2) * (legalMoves.Count + 1) * ( 1 ); //chips count
+
+
             if (depth == 0 || board.isTheGameEnded())
             {
                 int n = board._n;
-                int score = (board.gameScore().Item1 - board.gameScore().Item2);
+                
                 if (depth == 0)
                 {
                   //  Console.WriteLine("depth");
@@ -128,12 +140,13 @@ namespace Game
             }
 
  
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            
             Tuple<int, int> localBestMove = null;
 
             if (legalMoves.Count == 0)
             {
                 //pass
+                
                 return maxValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds);
             }
 
@@ -170,8 +183,6 @@ namespace Game
 
             }
 
-
-            Tuple<int,int> BestMove = new Tuple<int,int>(localBestMove.Item1,localBestMove.Item2);
             return new Tuple < int,Tuple < int,int>> (beta, localBestMove);
 
 
@@ -179,7 +190,7 @@ namespace Game
 
 
 
-            public static Tuple<int, int> turn(Board board, char playerChar, TimeSpan timesup)
+        Tuple<int, int> turn(Board board, char playerChar, TimeSpan timesup)
         {
             Stopwatch mytimer = Stopwatch.StartNew();
             TimeSpan timespan = timesup;
