@@ -43,7 +43,7 @@ namespace Game
             {
                 Console.WriteLine("quantom");
                 // int score = board.gameScore().Item1 - board.gameScore().Item2;
-                return new Tuple<int, Tuple<int, int>>(int.MinValue, null); ;
+                return new Tuple<int, Tuple<int, int>>(board.gameScore().Item1 - board.gameScore().Item2, null); ;
             }
 
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
@@ -105,7 +105,8 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-                if (quantom - mytimer.Elapsed.Milliseconds < 0)
+                quantom -= mytimer.Elapsed.Milliseconds;
+                if (quantom  < 0)
                 {
                  //   Console.WriteLine("break");
                     break;
@@ -113,8 +114,8 @@ namespace Game
                 Board newBoard = new Board(board);
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
-
-                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.Elapsed.Milliseconds, movesLeft-1).Item1;
+                quantom -= mytimer.Elapsed.Milliseconds;
+                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom, movesLeft-1).Item1;
 
                 //corners
                 
@@ -122,6 +123,7 @@ namespace Game
                 {
                     //alpha = Convert.ToInt32((double)alpha * 2);
                     localBestMove = legalMove;
+                    bestResult = alpha;
                     break;
                 }
                 
@@ -161,7 +163,7 @@ namespace Game
             {
                 Console.WriteLine("quantom");
              //   int score = board.gameScore().Item1 - board.gameScore().Item2;
-                return new Tuple<int, Tuple<int, int>>(int.MaxValue, null);
+                return new Tuple<int, Tuple<int, int>>(board.gameScore().Item1 - board.gameScore().Item2, null);
             }
 
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
@@ -226,9 +228,10 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-                if (quantom - mytimer.Elapsed.Milliseconds < 0)
+                quantom -= mytimer.Elapsed.Milliseconds;
+                if (quantom < 0)
                 {
-                //    Console.WriteLine("break");
+                    //   Console.WriteLine("break");
                     break;
                 }
                 Board newBoard = new Board(board);
@@ -236,14 +239,17 @@ namespace Game
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
                 int n = board._n;
 
-                beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
+                quantom -= mytimer.Elapsed.Milliseconds;
+                beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom, movesLeft-1).Item1;
 
                 //corners
                 
+
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     //beta = Convert.ToInt32((double)beta * 0.5);
                     localBestMove = legalMove;
+                    bestResult = beta;
                     break;
                 }
                 
@@ -271,10 +277,10 @@ namespace Game
 
         Tuple<int, int> turn(Board board, char playerChar, TimeSpan timesup)
         {
-            Stopwatch mytimer = Stopwatch.StartNew();
+            Stopwatch timer = Stopwatch.StartNew();
             TimeSpan timespan = timesup;
             long timeThreshold = 10;
-            long quantom = timespan.Ticks - mytimer.Elapsed.Milliseconds - timeThreshold;
+            long quantom = timespan.Ticks - timer.Elapsed.Milliseconds - timeThreshold;
 
             int n = board._n;
            // MaxDepth = 10;
