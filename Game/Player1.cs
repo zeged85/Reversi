@@ -36,20 +36,19 @@ namespace Game
 
         Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom, int movesLeft)
         {
+            Stopwatch mytimer = Stopwatch.StartNew();
 
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
-            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer( playerChar));
+
             if (quantom < 0)
-
-
             {
                 Console.WriteLine("quantom");
-               // int score = board.gameScore().Item1 - board.gameScore().Item2;
+                // int score = board.gameScore().Item1 - board.gameScore().Item2;
                 return new Tuple<int, Tuple<int, int>>(int.MinValue, null); ;
             }
 
-            Stopwatch mytimer = Stopwatch.StartNew();
-            
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer( playerChar));
+ 
 
             int _n = board._n;
             double size = (double)_n * _n;
@@ -118,9 +117,12 @@ namespace Game
                 alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
                 //corners
+                
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
-                    alpha = Convert.ToInt32((double)alpha * 10);
+                    //alpha = Convert.ToInt32((double)alpha * 2);
+                    localBestMove = legalMove;
+                    break;
                 }
                 
 
@@ -152,8 +154,9 @@ namespace Game
 
         Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom, int movesLeft)
         {
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
-            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer(playerChar));
+            Stopwatch mytimer = Stopwatch.StartNew();
+
+
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
@@ -161,9 +164,10 @@ namespace Game
                 return new Tuple<int, Tuple<int, int>>(int.MaxValue, null);
             }
 
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer(playerChar));
 
-            Stopwatch mytimer = Stopwatch.StartNew();
-          
+
 
             int _n = board._n;
             double size = (double)_n * _n;
@@ -235,9 +239,12 @@ namespace Game
                 beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
                 //corners
+                
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
-                    beta = Convert.ToInt32((double)beta * 0.1);
+                    //beta = Convert.ToInt32((double)beta * 0.5);
+                    localBestMove = legalMove;
+                    break;
                 }
                 
 
