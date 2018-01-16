@@ -93,7 +93,7 @@ namespace Game
             if (legalMoves.Count == 0)
             {
                 //pass
-                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds, movesLeft);
+                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.Elapsed.Milliseconds, movesLeft);
             }
             else
             {
@@ -105,7 +105,7 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-                if (quantom - mytimer.ElapsedMilliseconds < 0)
+                if (quantom - mytimer.Elapsed.Milliseconds < 0)
                 {
                  //   Console.WriteLine("break");
                     break;
@@ -114,7 +114,7 @@ namespace Game
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
 
-                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
+                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.Elapsed.Milliseconds, movesLeft-1).Item1;
 
                 //corners
                 
@@ -141,7 +141,7 @@ namespace Game
             }
 
 
-            return new Tuple<int,Tuple<int,int>>(alpha,localBestMove);
+            return new Tuple<int,Tuple<int,int>>(bestResult, localBestMove);
 
 
         }
@@ -226,7 +226,7 @@ namespace Game
 
             foreach (Tuple<int, int> legalMove in legalMoves)
             {
-                if (quantom - mytimer.ElapsedMilliseconds < 0)
+                if (quantom - mytimer.Elapsed.Milliseconds < 0)
                 {
                 //    Console.WriteLine("break");
                     break;
@@ -262,7 +262,7 @@ namespace Game
 
             }
 
-            return new Tuple < int,Tuple < int,int>> (beta, localBestMove);
+            return new Tuple < int,Tuple < int,int>> (bestResult, localBestMove);
 
 
         }

@@ -18,7 +18,7 @@ namespace Game
             Player player2      = new Player2();
             int numberOfGames   = 1;
             int boardSize       = 4;  // must be even
-            int gameLevel       = 5;  // between 1 to 4
+            int gameLevel       = 1;  // between 1 to 4
             bool toPrint        = true;
             GameController controller =
                 new GameController(numberOfGames, boardSize, gameLevel, toPrint, player1, player2);
