@@ -41,7 +41,7 @@ namespace Game
 
             if (quantom < 0)
             {
-                Console.WriteLine("quantom");
+                //Console.WriteLine("quantom");
                 // int score = board.gameScore().Item1 - board.gameScore().Item2;
                 return new Tuple<int, Tuple<int, int>>(board.gameScore().Item1 - board.gameScore().Item2, null); ;
             }
@@ -118,14 +118,14 @@ namespace Game
                 alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom, movesLeft-1).Item1;
 
                 //corners
-                
+                /*
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     //alpha = Convert.ToInt32((double)alpha * 2);
                     localBestMove = legalMove;
                     bestResult = alpha;
                     break;
-                }
+                }*/
                 
 
                 if (alpha > bestResult)
@@ -161,7 +161,7 @@ namespace Game
 
             if (quantom < 0)
             {
-                Console.WriteLine("quantom");
+             //   Console.WriteLine("quantom");
              //   int score = board.gameScore().Item1 - board.gameScore().Item2;
                 return new Tuple<int, Tuple<int, int>>(board.gameScore().Item1 - board.gameScore().Item2, null);
             }
@@ -244,14 +244,14 @@ namespace Game
 
                 //corners
                 
-
+                /*
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     //beta = Convert.ToInt32((double)beta * 0.5);
                     localBestMove = legalMove;
                     bestResult = beta;
                     break;
-                }
+                }*/
                 
 
                 if (beta < bestResult)
@@ -289,7 +289,7 @@ namespace Game
             int bestScore = best.Item1;
             Tuple<int, int> BestMove = best.Item2;
 
-            Console.WriteLine(bestScore);
+            //Console.WriteLine(bestScore);
 
             if (BestMove == null)
             {
