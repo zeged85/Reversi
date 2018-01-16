@@ -47,7 +47,25 @@ namespace Game
             Stopwatch mytimer = Stopwatch.StartNew();
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
 
-            int score = (board.gameScore().Item1 - board.gameScore().Item2) * (legalMoves.Count + 1);
+            int _n = board._n;
+            int myChips = 1;
+            int enemyChips = 1;
+            for (int i = 0; i < _n; i++)
+                for (int j = 0; j < _n; j++)
+                {
+                    if (board._boardGame[i, j] == otherPlayer(playerChar))
+                        enemyChips += 1;
+                    else if (board._boardGame[i, j] == playerChar)
+                        myChips += 1;
+                }
+
+            int noZero = board.gameScore().Item2;
+            if (noZero == 0)
+            {
+                noZero++;
+            }
+
+            int score = (board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * (myChips / enemyChips) * 100;
 
             if (depth ==0 || board.isTheGameEnded())
             {
@@ -124,8 +142,26 @@ namespace Game
 
             Stopwatch mytimer = Stopwatch.StartNew();
             List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
-    
-            int score = (board.gameScore().Item1 - board.gameScore().Item2) * (legalMoves.Count + 1) * ( 1 ); //chips count
+
+            int _n = board._n;
+            int myChips = 1;
+            int enemyChips = 1;
+            for (int i = 0; i < _n; i++)
+                for (int j = 0; j < _n; j++)
+                {
+                    if (board._boardGame[i, j] == otherPlayer(playerChar))
+                        enemyChips += 1;
+                    else if (board._boardGame[i, j] == playerChar)
+                        myChips += 1;
+                }
+
+            int noZero = board.gameScore().Item2;
+            if (noZero == 0)
+            {
+                noZero++;
+            }
+
+                    int score = (board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * ( myChips / enemyChips ) * 100; //chips count
 
 
             if (depth == 0 || board.isTheGameEnded())
