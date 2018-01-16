@@ -34,9 +34,10 @@ namespace Game
    
 
 
-        Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
+        Tuple<int, Tuple<int, int>> maxValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom, int movesLeft)
         {
 
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
@@ -45,7 +46,7 @@ namespace Game
             }
 
             Stopwatch mytimer = Stopwatch.StartNew();
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+            
 
             int _n = board._n;
             int myChips = 1;
@@ -65,7 +66,9 @@ namespace Game
                 noZero++;
             }
 
-            int score = /*(board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * */ (myChips / enemyChips) * 100;
+            double chipRatio = (double)myChips / (double)enemyChips;
+            double scoreRation = (double)board.gameScore().Item1 / (double)noZero;
+            int score = Convert.ToInt32((double)(legalMoves.Count + 1) * 20  + chipRatio * 30 + scoreRation * 50 * (1 + _n*_n - movesLeft)); //chips count
 
             if (depth ==0 || board.isTheGameEnded())
             {
@@ -84,7 +87,7 @@ namespace Game
             if (legalMoves.Count == 0)
             {
                 //pass
-                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds);
+                return minValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom - mytimer.ElapsedMilliseconds, movesLeft);
             }
 
 
@@ -101,7 +104,12 @@ namespace Game
                 newBoard.fillPlayerMove(playerChar, legalMove.Item1, legalMove.Item2);
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
 
-                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds).Item1;
+                alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
+
+                if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
+                {
+                    alpha = Convert.ToInt32((double)alpha * 10);
+                }
 
 
                 if (alpha > bestResult)
@@ -130,8 +138,9 @@ namespace Game
 
 
 
-        Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom)
+        Tuple<int, Tuple<int, int>> minValue(Board board, int alpha, int beta, int depth, char playerChar, long quantom, int movesLeft)
         {
+            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
             if (quantom < 0)
             {
                 Console.WriteLine("quantom");
@@ -141,7 +150,7 @@ namespace Game
 
 
             Stopwatch mytimer = Stopwatch.StartNew();
-            List<Tuple<int, int>> legalMoves = board.getLegalMoves(playerChar);
+          
 
             int _n = board._n;
             int myChips = 1;
@@ -161,7 +170,9 @@ namespace Game
                 noZero++;
             }
 
-                    int score = /*(board.gameScore().Item1 / noZero) * (legalMoves.Count + 1) * */ ( myChips / enemyChips ) * 100; //chips count
+            double chipRatio = (double)myChips / (double)enemyChips;
+            double scoreRation = (double)board.gameScore().Item1 / (double)noZero;
+            int score = Convert.ToInt32((double)(legalMoves.Count + 1) * 20  + chipRatio * 30 + scoreRation * 50 * (1 + _n*_n - movesLeft)); //chips count
 
 
             if (depth == 0 || board.isTheGameEnded())
@@ -183,7 +194,7 @@ namespace Game
             {
                 //pass
                 
-                return maxValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds);
+                return maxValue(board, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft);
             }
 
 
@@ -202,8 +213,12 @@ namespace Game
                 int boardScore = newBoard.gameScore().Item1- board.gameScore().Item2;
                 int n = board._n;
 
-                beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds).Item1;
+                beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
+                if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
+                {
+                    beta = Convert.ToInt32((double)beta * 0.1);
+                }
 
                 if (beta < bestResult)
                 {
@@ -236,10 +251,11 @@ namespace Game
             int n = board._n;
            // MaxDepth = 10;
             
-            Tuple<int,Tuple<int,int>> best = maxValue(board, int.MinValue, int.MaxValue, n*n/2, playerChar, quantom);
+            Tuple<int,Tuple<int,int>> best = maxValue(board, int.MinValue, int.MaxValue, n*n/2, playerChar, quantom, n*n-4);
             int bestScore = best.Item1;
             Tuple<int, int> BestMove = best.Item2;
 
+            Console.WriteLine(bestScore);
 
             if (BestMove == null)
             {
