@@ -41,6 +41,7 @@ namespace Game
             List<Tuple<int, int>> enemyLegalMoves = board.getLegalMoves(otherPlayer( playerChar));
             if (quantom < 0)
 
+
             {
                 Console.WriteLine("quantom");
                // int score = board.gameScore().Item1 - board.gameScore().Item2;
@@ -74,7 +75,7 @@ namespace Game
                 movesRatio = (double)(Math.Abs(legalMoves.Count - enemyLegalMoves.Count)) / (double)(legalMoves.Count + (double)enemyLegalMoves.Count);
             double progress = ((size - (double)movesLeft ) / size);
             double weights = scoreRation * progress;
-            int score = Convert.ToInt32(movesRatio * 20 + chipRatio * 100 + weights * 20); //chips count
+            int score = Convert.ToInt32(movesRatio * 10 + chipRatio * 100 + weights * 500); //chips count
 
             if (depth ==0 || board.isTheGameEnded())
             {
@@ -116,12 +117,12 @@ namespace Game
 
                 alpha = minValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom-mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
-                /*corners
+                //corners
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     alpha = Convert.ToInt32((double)alpha * 10);
                 }
-                */
+                
 
                 if (alpha > bestResult)
                 {
@@ -186,7 +187,7 @@ namespace Game
                 movesRatio = (double)(Math.Abs(legalMoves.Count - enemyLegalMoves.Count)) / (double)(legalMoves.Count + (double)enemyLegalMoves.Count);
             double progress = ((size - (double)movesLeft) / size);
             double weights = scoreRation * progress;
-            int score = Convert.ToInt32(movesRatio * 20 + chipRatio * 100 + weights * 20); //chips count
+            int score = Convert.ToInt32(movesRatio * 10 + chipRatio * 100 + weights * 500); //chips count
 
 
             if (depth == 0 || board.isTheGameEnded())
@@ -233,12 +234,12 @@ namespace Game
 
                 beta = maxValue(newBoard, alpha, beta, depth - 1, otherPlayer(playerChar), quantom- mytimer.ElapsedMilliseconds, movesLeft-1).Item1;
 
-                /*corners
+                //corners
                 if (legalMove.Item1 == 0 || legalMove.Item1 == _n - 1 && legalMove.Item2 == 0 || legalMove.Item2 == _n - 1)
                 {
                     beta = Convert.ToInt32((double)beta * 0.1);
                 }
-                */
+                
 
                 if (beta < bestResult)
                 {
